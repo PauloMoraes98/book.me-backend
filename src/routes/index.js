@@ -11,6 +11,6 @@ routes.use(authMiddleware);
 
 routes.get('/user', User.index);
 routes.put('/user/:id', User.update);
-routes.delete('/user/:id', User.delete);
+routes.delete('/user', User.delete);
 
 module.exports = routes;

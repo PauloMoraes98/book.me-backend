@@ -122,18 +122,27 @@ module.exports = {
   },
 
   async delete(req, res) {
-    const {
-      id
-    } = req.params;
+    const userId = req.userId;
 
-    const user = await User.findOne({
-      where: {
-        id
-      }
-    })
+    try {
+      const user = await User.findOne({
+        where: {
+          id: userId
+        }
+      });
 
-    await user.destroy(user);
+      if(!user)
+        return res.status(404).json({ error: 'Cannot find User' });
 
-    return res.json();
+      const deletedUser = await user.destroy(user);
+
+      if(!deletedUser)
+        return res.status(400).json({ error: 'Cannot delete User' });        
+
+      return res.json();
+    } catch (err) {
+      console.log(err);
+      return res.status(500).json({ error: 'Internal Server Error!'});
+    }
   },
 };
