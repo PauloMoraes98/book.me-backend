@@ -94,22 +94,30 @@ module.exports = {
   },
 
   async update(req, res) {
-    const {
-      id
-    } = req.params;
-    const updated = await User.update(req.body, {
-      where: {
-        id
-      }
-    });
+    const userId = req.userId;
 
-    if (updated) {
-      const user = await User.findOne({
-        where: {
-          id
-        }
+    try {
+      const updated = await User.update(req.body, {
+        where: { id: userId }  
       });
-      return res.json(user);
+
+      if (updated) {
+        const user = await User.findOne({
+          where: {
+            id: userId
+          }
+        });
+
+        if(!user)
+          return res.status(404).json({ error: 'Cannot find User' });
+
+        return res.json(user);
+      } else {
+        res.status(400).json({ error: 'User cannot be updated!' });
+      }
+    } catch (err) {
+      console.log(err);
+      return res.status(500).json({ error: 'Internal Server Error!'});
     }
   },
 
