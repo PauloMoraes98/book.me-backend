@@ -1,5 +1,5 @@
 const bcrypt = require('bcrypt-nodejs');
-const TokeController = require('./Token');
+const TokeController = require('../assets/Token');
 const User = require('../models/User');
 
 module.exports = {
