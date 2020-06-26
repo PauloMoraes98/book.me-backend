@@ -1,9 +1,11 @@
 const express = require('express');
-const Test2Controller = require('../controllers/Test2Controller')
+const User = require('../controllers/User')
 
 const routes = express.Router();
 
-routes.get('/test2', Test2Controller.index);
-routes.post('/test2', Test2Controller.store);
+routes.get('/user', User.index);
+routes.post('/user', User.store);
+routes.put('/user/:id', User.update);
+routes.delete('/user/:id', User.delete);
 
 module.exports = routes;
