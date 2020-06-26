@@ -7,3 +7,5 @@ DB_HOST= Endereço do servidor
 DB_USER= Usuário admin do banco
 DB_PASS= Senha do banco
 DB_NAME= Nome do banco
+AUTH_SECRET= Secret da autenticação
+
