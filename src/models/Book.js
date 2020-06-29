@@ -10,10 +10,7 @@ class Book extends Model {
       intention: DataTypes.INTEGER,
       value: DataTypes.DOUBLE,
       image: DataTypes.STRING
-    }, { 
-      sequelize,
-      freezeTableName: true,
-    });
+    }, { sequelize });
   }
 
   static associate (models) {

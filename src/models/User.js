@@ -12,10 +12,7 @@ class User extends Model {
       longitude: DataTypes.DOUBLE,
       bio: DataTypes.STRING,
       image: DataTypes.STRING
-    }, { 
-      sequelize,
-      freezeTableName: true,
-    });
+    }, { sequelize });
   }
 
   static associate (models) {
