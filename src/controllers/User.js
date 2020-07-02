@@ -63,11 +63,7 @@ module.exports = {
     const { email, password } = req.body;
 
     try {
-      const user = await User.findOne({
-        where: {
-          email
-        }
-      });
+      const user = await User.findOne({ where: { email } });
 
       if(user) {
         bcrypt.compare(password, user.password, (err, isMatch) => {
@@ -94,19 +90,13 @@ module.exports = {
   },
 
   async update(req, res) {
-    const userId = req.userId;
+    const { id } = req.params;
 
     try {
-      const updated = await User.update(req.body, {
-        where: { id: userId }  
-      });
+      const updated = await User.update(req.body, { where: { id } });
 
       if (updated) {
-        const user = await User.findOne({
-          where: {
-            id: userId
-          }
-        });
+        const user = await User.findOne({ where: { id } });
 
         if(!user)
           return res.status(404).json({ error: 'Cannot find User' });
@@ -122,14 +112,10 @@ module.exports = {
   },
 
   async delete(req, res) {
-    const userId = req.userId;
+    const { id } = req.params;
 
     try {
-      const user = await User.findOne({
-        where: {
-          id: userId
-        }
-      });
+      const user = await User.findOne({ where: { id } });
 
       if(!user)
         return res.status(404).json({ error: 'Cannot find User' });
