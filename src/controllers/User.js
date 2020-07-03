@@ -25,7 +25,7 @@ module.exports = {
     const salt = bcrypt.genSaltSync(10);
 
     const cryptedPassword = bcrypt.hashSync(password, salt);
-
+  
     try {
       if(await User.findOne({ where: { email } }))
         return res.status(400).json({ error: 'User Alredy exists' });
@@ -59,16 +59,20 @@ module.exports = {
     }
   },
 
-  async singin(req, res) {
+  async login(req, res) {
     const { email, password } = req.body;
 
     try {
-      const user = await User.findOne({ where: { email } });
+      const user = await User.findOne({
+        where: {
+          email
+        }
+      });
 
       if(user) {
         bcrypt.compare(password, user.password, (err, isMatch) => {
           if (err, !isMatch) {
-            return res.status(401).json({ error: 'User not found!' });
+            return res.status(401).json({ error: 'Incorrect password!' });
           }
 
           res.json({
@@ -90,13 +94,43 @@ module.exports = {
   },
 
   async update(req, res) {
-    const { id } = req.params;
+    const userId = req.userId;
 
-    try {
-      const updated = await User.update(req.body, { where: { id } });
+    const {
+      name,
+      email,
+      password,
+      city,
+      uf,
+      latitude,
+      longitude,
+      bio,
+      image
+    } = req.body;
+
+    const salt = bcrypt.genSaltSync(10);
+
+    const cryptedPassword = bcrypt.hashSync(password, salt);
+  
+    try { 
+      const updated = await User.update({
+        name,
+        email,
+        password: cryptedPassword,
+        city,
+        uf,
+        latitude,
+        longitude,
+        bio,
+        image
+      }, { where: { id: userId } });
 
       if (updated) {
-        const user = await User.findOne({ where: { id } });
+        const user = await User.findOne({
+          where: {
+            id: userId
+          }
+        });
 
         if(!user)
           return res.status(404).json({ error: 'Cannot find User' });
@@ -112,10 +146,14 @@ module.exports = {
   },
 
   async delete(req, res) {
-    const { id } = req.params;
+    const userId = req.userId;
 
     try {
-      const user = await User.findOne({ where: { id } });
+      const user = await User.findOne({
+        where: {
+          id: userId
+        }
+      });
 
       if(!user)
         return res.status(404).json({ error: 'Cannot find User' });

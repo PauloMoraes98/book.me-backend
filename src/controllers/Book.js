@@ -47,13 +47,26 @@ module.exports = {
   },
 
   async update(req, res) {
-    const { id } = req.params;
+    const id_user = req.userId;
+    const id_book = req.params.id;
 
     try {
-      const updated = await Book.update(req.body, { where: { id } });
+      const updated = await Book.update(
+        req.body, { 
+          where: { 
+            id: id_book,
+            id_user 
+          } 
+        }
+      );
 
       if (updated) {
-        const book = await Book.findOne({ where: { id } });
+        const book = await Book.findOne({ 
+          where: { 
+            id: id_book,
+            id_user 
+          } 
+        });
 
         if(!book)
           return res.status(404).json({ error: 'Cannot find book' });
@@ -69,10 +82,17 @@ module.exports = {
   },
 
   async delete(req, res) {
-    const { id } = req.params;
-    try {
-      const book = await Book.findOne({ where: { id } });
+    const id_user = req.userId;
+    const id_book = req.params.id;
 
+    try {
+      const book = await Book.findOne({
+        where: { 
+          id: id_book,
+          id_user 
+        }
+      });
+      console.log(book)
       if(!book)
         return res.status(404).json({ error: 'Cannot find book' });
 
