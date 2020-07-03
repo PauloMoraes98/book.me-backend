@@ -92,7 +92,7 @@ module.exports = {
           id_user 
         }
       });
-      console.log(book)
+      
       if(!book)
         return res.status(404).json({ error: 'Cannot find book' });
 
