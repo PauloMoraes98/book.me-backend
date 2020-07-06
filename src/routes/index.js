@@ -10,9 +10,11 @@ routes.post('/login', User.login);
 
 routes.use(authMiddleware);
 
-routes.get('/user', User.index);
+routes.get('/user/:id', User.index);
 routes.put('/user', User.update);
 routes.delete('/user', User.delete);
+
+routes.post('/users', User.indexByLocation);
 
 routes.post('/book', Book.store);
 routes.get('/book', Book.index);

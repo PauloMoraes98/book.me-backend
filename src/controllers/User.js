@@ -1,12 +1,64 @@
 const bcrypt = require('bcrypt-nodejs');
 const TokeController = require('../assets/Token');
+const Sequelize = require('sequelize');
 const User = require('../models/User');
+const Op = Sequelize.Op;
 
 module.exports = {
   async index(req, res) {
-    const users = await User.findAll();
+    const id = req.params.id;
 
-    return res.json(users);
+    try {
+      const user = await User.findOne({
+        where: {
+          id
+        },
+        include: [
+          {association:  'books'}
+        ]
+      });
+
+      if(!user)
+        return res.status(404).json({error: 'Cannot find User'});
+
+      user.password = undefined;
+      
+      return res.json(user);
+    }
+    catch (err) {
+      console.log(err);
+      return res.status(500).json({ error: 'Internal Server Error!'});
+    }
+  },
+
+  async indexByLocation (req, res) {
+    const userId = req.userId;
+    const { city, uf } = req.body;
+
+    try {
+      const users = await User.findAll({
+        where: {
+          city,
+          uf,
+          id: {
+            [Op.ne]: userId
+          }
+        }
+      });
+
+      if(!users)
+        return res.status(404).json({error: 'Cannot find User'});
+
+      users.password = undefined;
+
+      console.log(users)
+      
+      return res.json(users);
+    }
+    catch (err) {
+      console.log(err);
+      return res.status(500).json({ error: 'Internal Server Error! '});
+    }
   },
 
   async store(req, res) {
@@ -29,13 +81,16 @@ module.exports = {
     try {
       if(await User.findOne({ where: { email } }))
         return res.status(400).json({ error: 'User Alredy exists' });
+
+      const cityUpper = city.toUpperCase();
+      const ufUpper = uf.toUpperCase();
       
       const user = await User.create({
         name,
         email,
         password: cryptedPassword,
-        city,
-        uf,
+        city: cityUpper,
+        uf: ufUpper,
         latitude,
         longitude,
         bio,
@@ -134,6 +189,8 @@ module.exports = {
 
         if(!user)
           return res.status(404).json({ error: 'Cannot find User' });
+
+        user.password = undefined;
 
         return res.json(user);
       } else {
