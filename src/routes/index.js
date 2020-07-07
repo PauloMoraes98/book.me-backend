@@ -19,4 +19,6 @@ routes.get('/book', Book.index);
 routes.put('/book/:id', Book.update);
 routes.delete('/book/:id', Book.delete);
 
+routes.get('/book/:id', Book.indexById);
+
 module.exports = routes;
