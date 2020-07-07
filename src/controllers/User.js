@@ -50,8 +50,6 @@ module.exports = {
         return res.status(404).json({error: 'Cannot find User'});
 
       users.password = undefined;
-
-      console.log(users)
       
       return res.json(users);
     }
