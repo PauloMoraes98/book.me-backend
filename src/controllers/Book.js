@@ -1,12 +1,54 @@
 const bcrypt = require('bcrypt-nodejs');
 const TokeController = require('../assets/Token');
+const Sequelize = require('sequelize');
 const Book = require('../models/Book');
+const Op = Sequelize.Op;
 
 module.exports = {
   async index(req, res) {
-    const books = await Book.findAll();
+    const id_user = req.userId;
+    try {
+      const book = await Book.findAll({
+        where: {
+          id_user: {
+            [Op.ne]: id_user
+          }
+        },
+        include: [
+          {association: 'books'}
+        ]
+      });
+      
+      if(!book)
+        return res.status(404).json({ error: 'Cannot find book' });
+      
+      return res.json(book);
+    }
+    catch (err) {
+      console.log(err);
+      return res.status(500).json({ error: 'Internal Server Error!'});
+    }
+  },
 
-    return res.json(books);
+  async indexById(req, res) {
+    const id_book = req.params.id;
+
+    try {
+      const book = await Book.findOne({
+        where: { 
+          id: id_book,
+        }
+      });
+      
+      if(!book)
+        return res.status(404).json({ error: 'Cannot find book' });
+
+      return res.json(book);
+    }
+    catch (err) {
+      console.log(err);
+      return res.status(500).json({ error: 'Internal Server Error!'});
+    }
   },
 
   async store(req, res) {
