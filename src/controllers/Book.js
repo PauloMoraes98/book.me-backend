@@ -37,7 +37,10 @@ module.exports = {
       const book = await Book.findOne({
         where: { 
           id: id_book,
-        }
+        }, 
+        include: [
+          {association: 'books'}
+        ]
       });
       
       if(!book)
