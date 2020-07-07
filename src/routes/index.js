@@ -14,7 +14,7 @@ routes.get('/user/:id', User.index);
 routes.put('/user', User.update);
 routes.delete('/user', User.delete);
 
-routes.post('/users', User.indexByLocation);
+routes.get('/users', User.indexByLocation);
 
 routes.post('/book', Book.store);
 routes.get('/book', Book.index);
