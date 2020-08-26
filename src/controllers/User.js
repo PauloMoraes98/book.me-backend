@@ -154,7 +154,6 @@ module.exports = {
     const {
       name,
       email,
-      password,
       city,
       uf,
       latitude,
@@ -164,15 +163,10 @@ module.exports = {
       phone
     } = req.body;
 
-    const salt = bcrypt.genSaltSync(10);
-
-    const cryptedPassword = bcrypt.hashSync(password, salt);
-  
     try { 
       const updated = await User.update({
         name,
         email,
-        password: cryptedPassword,
         city,
         uf,
         latitude,
@@ -197,6 +191,61 @@ module.exports = {
         return res.json(user);
       } else {
         res.status(400).json({ error: 'User cannot be updated!' });
+      }
+    } catch (err) {
+      console.log(err);
+      return res.status(500).json({ error: 'Internal Server Error!'});
+    }
+  },
+
+  async updatePassword(req, res) {
+    const userId = req.userId;
+
+    const {
+      currentPassword,
+      newPassword
+    } = req.body;
+
+    try {
+      const user = await User.findOne({
+        where: {
+          id: userId
+        }
+      });
+
+      if(user) {
+        bcrypt.compare(currentPassword, user.password, async (err, isMatch) => {
+          if (err, !isMatch) {
+            return res.status(401).json({ error: 'Incorrect password!' });
+          }
+
+          const salt = bcrypt.genSaltSync(10);
+
+          const cryptedPassword = bcrypt.hashSync(newPassword, salt);
+
+          const updated = await User.update({
+            password: cryptedPassword,
+          }, { where: { id: userId } });
+
+          if (updated) {
+            const userUpdated = await User.findOne({
+              where: {
+                id: userId
+              }
+            });
+    
+            if(!userUpdated)
+              return res.status(404).json({ error: 'Cannot find User' });
+
+            user.password = undefined;
+    
+            return res.json(userUpdated);
+          } else {
+            res.status(400).json({ error: 'User cannot be updated!' });
+          }
+        });
+      } else {
+        res.status(400).json({ error: 'User not found!' });
       }
     } catch (err) {
       console.log(err);
