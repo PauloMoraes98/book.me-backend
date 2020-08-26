@@ -7,13 +7,20 @@ const Op = Sequelize.Op;
 module.exports = {
   async index(req, res) {
     const id_user = req.userId;
+
+    const { page = 1 } = req.query;
+
     try {
+      const count = await Book.count();
+
       const book = await Book.findAll({
         where: {
           id_user: {
             [Op.ne]: id_user
           }
         },
+        limit: 5,
+        offset:(page - 1) * 5,
         include: [
           {association: 'books'}
         ]
@@ -22,6 +29,8 @@ module.exports = {
       if(!book)
         return res.status(404).json({ error: 'Cannot find book' });
       
+      res.header('X-Total-Count', count);
+
       return res.json(book);
     }
     catch (err) {
