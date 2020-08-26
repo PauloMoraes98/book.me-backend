@@ -11,7 +11,8 @@ class User extends Model {
       latitude: DataTypes.DOUBLE,
       longitude: DataTypes.DOUBLE,
       bio: DataTypes.STRING,
-      image: DataTypes.STRING
+      image: DataTypes.STRING,
+      phone: DataTypes.STRING
     }, { sequelize });
   }
 

@@ -69,7 +69,8 @@ module.exports = {
       latitude,
       longitude,
       bio,
-      image
+      image,
+      phone
     } = req.body;
 
     const salt = bcrypt.genSaltSync(10);
@@ -92,7 +93,8 @@ module.exports = {
         latitude,
         longitude,
         bio,
-        image
+        image,
+        phone
       });
 
       if(!user)
@@ -158,7 +160,8 @@ module.exports = {
       latitude,
       longitude,
       bio,
-      image
+      image,
+      phone
     } = req.body;
 
     const salt = bcrypt.genSaltSync(10);
@@ -175,7 +178,8 @@ module.exports = {
         latitude,
         longitude,
         bio,
-        image
+        image,
+        phone
       }, { where: { id: userId } });
 
       if (updated) {
