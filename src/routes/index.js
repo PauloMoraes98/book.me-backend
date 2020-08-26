@@ -12,6 +12,7 @@ routes.use(authMiddleware);
 
 routes.get('/user/:id', User.index);
 routes.put('/user', User.update);
+routes.put('/newpassword', User.updatePassword);
 routes.delete('/user', User.delete);
 
 routes.get('/users', User.indexByLocation);
