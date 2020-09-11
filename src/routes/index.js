@@ -15,7 +15,7 @@ routes.put('/user', User.update);
 routes.put('/newpassword', User.updatePassword);
 routes.delete('/user', User.delete);
 
-routes.get('/users', User.indexByLocation);
+routes.post('/users', User.indexByLocation);
 
 routes.post('/book', Book.store);
 routes.get('/book', Book.index);
