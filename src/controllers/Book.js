@@ -39,6 +39,46 @@ module.exports = {
     }
   },
 
+  async indexLike(req, res) {
+    const id_user = req.userId;
+
+    const { page = 1 } = req.query;
+
+    const {name} = req.body;
+
+    try {
+      const count = await Book.count();
+
+      const book = await Book.findAll({
+        where: {
+          id_user: {
+            [Op.ne]: id_user
+          },
+          name: {
+            [Op.startsWith]: name,
+          }
+        },
+        limit: 5,
+        offset:(page - 1) * 5,
+        include: [
+          {association: 'books'}
+        ]
+      });
+
+      if(!book)
+        return res.status(404).json({ error: 'Cannot find book' });
+      
+      res.header('X-Total-Count', count);
+
+      return res.json(book);
+    }
+    catch (err) {
+      console.log(err);
+      return res.status(500).json({ error: 'Internal Server Error!'});
+    }
+  },
+
+
   async indexById(req, res) {
     const id_book = req.params.id;
 
