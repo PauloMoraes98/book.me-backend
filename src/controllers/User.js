@@ -131,6 +131,7 @@ module.exports = {
           }
 
           res.json({
+            id: user.id,
             name: user.name,
             email: user.email,
             token: TokeController.generateToken({ 
