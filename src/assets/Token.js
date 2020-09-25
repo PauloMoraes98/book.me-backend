@@ -2,8 +2,6 @@ const jwt = require('jsonwebtoken');
 
 module.exports = {
   generateToken(params = {}) {
-    return jwt.sign(params, process.env.AUTH_SECRET, {
-      expiresIn: 86400
-    });
+    return jwt.sign(params, process.env.AUTH_SECRET);
   }
 }
