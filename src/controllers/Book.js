@@ -23,7 +23,10 @@ module.exports = {
         offset:(page - 1) * 5,
         include: [
           {association: 'books'}
-        ]
+        ],
+        order: [
+          ['id', 'DESC']
+        ],
       });
       
       if(!book)
@@ -62,7 +65,10 @@ module.exports = {
         offset:(page - 1) * 5,
         include: [
           {association: 'books'}
-        ]
+        ],
+        order: [
+          ['id', 'DESC']
+        ],
       });
 
       if(!book)
